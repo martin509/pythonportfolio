@@ -67,7 +67,6 @@ def build_lettercount():
     for word in wordlist:    
         wordcount += 1
         letters = set(word.strip())
-        #print(f"letters size: {len(letters)}")
         lettercombo_list[len(letters)].add(frozenset(letters))
         for letter in letters:
             for co_letter in letters:
@@ -75,10 +74,6 @@ def build_lettercount():
         for i in range(WORD_SIZE):
             locationmap[i][word[i]] += 1
             
-    """for entry in locationmap:
-        print(f"{entry}")
-    for entry in lettercombo_list:
-        print(f"{entry}: {lettercombo_list[entry]}")"""
     return wordcount
     
 
@@ -88,19 +83,14 @@ def get_lettercount(letter_list):
     if not letter_list:
         return 0
     max_values = list()
-    #print(f"get_lettercount: {letter_list}")
     
     for letter in letter_list:
         l_dict = letterdict[letter]
-        #print(f"letter: {letter}, l_dict: {l_dict}")
         cur_values = list()
         for l in l_dict:
-            #print(f"l: {l}")
             if l in letter_list:
                 cur_values.append(l_dict[l])
-                #print(f"appended {l_dict[l]}")
         max_values.append(min(cur_values))
-    #print(f"get_lettercount: {max(max_values)}")
     return max(max_values)
     
 def compare_answer(guess, solution):
@@ -115,10 +105,8 @@ def compare_answer(guess, solution):
     for l in guess:
         if (l in solution) and (l not in known_letters):
             known_letters.add(l)
-            #print(f"Added letter '{l}' to known_letters")
         if (l not in solution) and (l not in non_letters):
             non_letters.add(l)
-            #print(f"Added letter '{l}' to non_letters")
     for i in range(WORD_SIZE):
         if guess[i] == solution[i]:
             cur_word[i] = guess[i]
@@ -202,11 +190,7 @@ def trim_working_wordlist():
         trimcount = len(working_wordlist)
     new_working_wordlist = [word for word in working_wordlist if check_can_be_answer(word)]
     working_wordlist = new_working_wordlist
-    """for index, word in enumerate(working_wordlist):
-        if not check_can_be_answer(word):
-            del working_wordlist[index]
-            if args.profile >= 3:
-                trimcount += 1"""
+    
     if args.profile >= 3:
         trimtime = time.perf_counter() - trimtime_start
         print(f"Trim complete, {trimcount - len(new_working_wordlist)} words trimmed, time: {trimtime}s")
@@ -230,8 +214,6 @@ def get_all_valid_words(letter_list):
                 words.append(word)
         elif args.profile >= 4:
                 print(f"word {word} removed from wordlist, wordlist size {len(working_wordlist)}/{len(wordlist)}")
-        #elif not check_can_be_answer(word): # trim down working_wordlist in real time
-            #del working_wordlist[index]
             
     working_wordlist = new_working_wordlist
 
@@ -267,8 +249,6 @@ def get_valid_word(letter_list):
     global cur_word
     global non_word
     
-    #print(f"letter_list: {letter_list}")
-    
     if not letter_list:
         return None
     for index, word in enumerate(working_wordlist.copy()):
@@ -279,20 +259,11 @@ def get_valid_word(letter_list):
                 if not (cur_word[i] == '') and not (cur_word[i] == word[i]):
                     word_correct = False
                     break
-                    #print(f"deleted {word} from working_wordlist ({len(working_wordlist)}/{len(wordlist)})")
-                    #print(f"   non_word: {non_word}")
-                    #print(f"   cur_word: {cur_word}")
                 elif (word[i] in non_word[i]):
-                    #print(f"Ruling out {word.strip()}")
                     word_correct = False
                     break
-                    #print(f"deleted {word} from working_wordlist ({len(working_wordlist)}/{len(wordlist)})")
-                    #print(f"   non_word: {non_word}")
-                    #print(f"   cur_word: {cur_word}")
             if word_correct:
                 return word
-            #else:
-                #del working_wordlist[index]
     return None
     
 
@@ -318,7 +289,7 @@ def cut_in_half():
     global letterdict
     
     result = None
-    r = WORD_SIZE + 1 #- len(known_letters)
+    r = WORD_SIZE + 1
     while (result == None):
         r = r-1
         if not args.test:
@@ -338,7 +309,6 @@ def cut_in_half():
             print(f"get_best_word time: {end_time}")
     
     return bestword
-    #return get_valid_word(list(result.keys()))
     
 #return a set of letters that cuts the current word space by ~50%
 def find_halfset(r):
