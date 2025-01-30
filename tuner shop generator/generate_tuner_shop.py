@@ -27,6 +27,7 @@ def generate_shop_name():
     return shop_name
 
 while True:
+    print("Press Enter for next tuning shop name ('q' for quit)")
     text = input()
     if text == 'q':
         break
